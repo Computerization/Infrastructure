@@ -30,20 +30,6 @@ basicauth_credentials:
     username: $DASHBOARD_USERNAME
     password: $DASHBOARD_PASSWORD
 
-plugins:
-  - name: acme
-    config:
-      account_email: $ACME_EMAIL
-      api_uri: https://acme-v02.api.letsencrypt.org/directory
-      tos_accepted: true
-      domains:
-        - $ACME_DOMAIN
-      storage: redis
-      storage_config:
-        redis:
-          host: kongredis
-          port: 6379
-
 ###
 ### API Routes
 ###

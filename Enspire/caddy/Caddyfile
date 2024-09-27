@@ -1,0 +1,9 @@
+forms.enspire.one {
+    reverse_proxy http://heyform:8000
+    tls contact@computerization.io
+}
+
+supabase.enspire.one {
+    reverse_proxy http://kong:8000
+    tls contact@computerization.io
+}
