@@ -402,6 +402,9 @@ services:
       - ./supabase/volumes/db/data:/var/lib/postgresql/data:Z
       # Changes required for Analytics support
       - ./supabase/volumes/db/logs.sql:/docker-entrypoint-initdb.d/migrations/99-logs.sql:Z
+      # Heyform database initiation
+      - ./heyform/db/init.sql:/docker-entrypoint-initdb.d/init-scripts/99-heyform:Z
+
       # Use named volume to persist pgsodium decryption key between restarts
       - db-config:/etc/postgresql-custom
 
