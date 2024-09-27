@@ -434,13 +434,13 @@ services:
 # ------------------------------
   heyform_ferretdb:
     image: ghcr.io/ferretdb/ferretdb
-    restart: on-failure
+    restart: unless-stopped
     environment:
       - FERRETDB_POSTGRESQL_URL=postgresql://postgres:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/heyform
 
   heyform_keydb:
     image: eqalpha/keydb:latest
-    restart: always
+    restart: unless-stopped
     command: keydb-server --appendonly yes
     volumes:
       # Persist KeyDB data
@@ -448,13 +448,13 @@ services:
 
   heyform:
     image: heyform/community-edition:latest
-    restart: always
+    restart: unless-stopped
     volumes:
       # Persist uploaded images
       - ./heyform/assets:/app/static/upload
     depends_on:
-      - mongo
-      - keydb
+      - heyform_ferretdb
+      - heyform_keydb
     environment:
       APP_HOMEPAGE_URL: https://forms.enspire.one
       SESSION_KEY: ${HEYFORM_SESSION_KEY}
