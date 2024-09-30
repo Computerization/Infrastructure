@@ -440,7 +440,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      NC_DB: pg://${POSTGRES_HOST}:${POSTGRES_PORT}?u=supabase_admin&p=${POSTGRES_PASSWORD}&d=nocodb
+      DATABASE_URL: postgresql://supabase_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/nocodb
     image: "nocodb/nocodb:latest"
     ports:
       - "8080:8080"
