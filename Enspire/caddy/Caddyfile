@@ -1,5 +1,5 @@
 forms.enspire.one {
-    reverse_proxy http://heyform:8000
+    reverse_proxy http://nocodb:8080
     tls contact@computerization.io
 }
 

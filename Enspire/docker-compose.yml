@@ -403,7 +403,7 @@ services:
       # Changes required for Analytics support
       - ./supabase/volumes/db/logs.sql:/docker-entrypoint-initdb.d/migrations/99-logs.sql:Z
       # Heyform database initiation
-      - ./heyform/db/init.sql:/docker-entrypoint-initdb.d/init-scripts/99-heyform.sql:Z
+      - ./nocodb/db/init.sql:/docker-entrypoint-initdb.d/init-scripts/99-nocodb.sql:Z
 
       # Use named volume to persist pgsodium decryption key between restarts
       - db-config:/etc/postgresql-custom
@@ -433,38 +433,24 @@ services:
     command: [ "--config", "etc/vector/vector.yml" ]
 
 # ------------------------------
-#  HEYFORM
+#  NOCODB
 # ------------------------------
-  heyform_ferretdb:
-    image: ghcr.io/ferretdb/ferretdb
-    restart: unless-stopped
-    environment:
-      - FERRETDB_POSTGRESQL_URL=postgresql://postgres:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/heyform
-
-  heyform_keydb:
-    image: eqalpha/keydb:latest
-    restart: unless-stopped
-    command: keydb-server --appendonly yes
-    volumes:
-      # Persist KeyDB data
-      - ./heyform/keydb:/data
-
-  heyform:
-    image: heyform/community-edition:latest
-    restart: unless-stopped
-    volumes:
-      # Persist uploaded images
-      - ./heyform/assets:/app/static/upload
+  nocodb:
     depends_on:
-      - heyform_ferretdb
-      - heyform_keydb
+      db:
+        condition: service_healthy
     environment:
-      APP_HOMEPAGE_URL: https://forms.enspire.one
-      SESSION_KEY: ${HEYFORM_SESSION_KEY}
-      FORM_ENCRYPTION_KEY: ${HEYFORM_FORM_ENCRYPTION_KEY}
-      MONGO_URI: 'mongodb://heyform_ferretdb:27017/heyform'
-      REDIS_HOST: heyform_keydb
-      REDIS_PORT: 6379
+      NC_DB: pg://${POSTGRES_HOST}:${POSTGRES_PORT}?u=postgres&p=${POSTGRES_PASSWORD}&d=nocodb
+    image: "nocodb/nocodb:latest"
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    volumes:
+      - "./nocodb/nc_data:/usr/app/data"
+
+# ------------------------------
+# APPSMITH
+# ------------------------------
 
 # ------------------------------
 # GATEWAY
